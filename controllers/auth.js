@@ -5,6 +5,7 @@ const onlyLoggedIn = require('../lib/only-logged-in');
 module.exports = (dataLoader) => {
   const authController = express.Router();
 
+
   // Create a new user (signup)
   authController.post('/users', (req, res) => {
     dataLoader.createUser({
@@ -28,7 +29,8 @@ module.exports = (dataLoader) => {
 
 
   // Delete a session (logout)
-  authController.delete('/sessions', onlyLoggedIn, (req, res) => {
+  authController.delete('/sessions',(req, res) => {
+
     if (req.sessionToken === req.body.token) {
       dataLoader.deleteToken(req.body.token)
       .then(() => res.status(204).end())
@@ -40,13 +42,17 @@ module.exports = (dataLoader) => {
 
 
   // Retrieve current user
-  authController.get('/me', onlyLoggedIn, (req, res) => {
-    // TODO: this is up to you to implement :)
-    if (req.sessionToken) {
+
+  authController.get('/me',onlyLoggedIn, (req, res) => {
+
+
+   if (req.sessionToken) {
+     // console.log("this is the session req: ",req.sessionToken)
     dataLoader.getUserFromSession(req.sessionToken)
       .then(data => res.json(data))
+
     //otherwise use req.body.sessionToken
-    //once user is validated, what occurs next?
+
 
       .then(() => res.status(204).end())
               .catch(err => res.status(400).json(err));
@@ -54,9 +60,6 @@ module.exports = (dataLoader) => {
                 res.status(401).json({ error: 'Invalid session token' });
               }
 
-
-
-    res.status(500).json({ error: 'not implemented' });
   });
 
   return authController;

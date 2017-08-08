@@ -26,7 +26,8 @@ module.exports = (dataLoader) => {
 
   // 3 - THREE
   // Create a new board
-  boardsController.post('/', onlyLoggedIn, (req, res) => {
+
+boardsController.post('/', onlyLoggedIn, (req, res) => {
     dataLoader.createBoard({
       ownerId: req.user.id,
       title: req.body.title,
@@ -38,18 +39,20 @@ module.exports = (dataLoader) => {
 
   // 4- FOUR
   // Modify an owned board
+
   boardsController.patch('/:id', onlyLoggedIn, (req, res) => {
     // First check if the board to be PATCHed belongs to the user making the request
     dataLoader.boardBelongsToUser(req.params.id, req.user.id)
     .then(() => {
-      return dataLoader.updateBoard(req.params.id, {
-        title: req.body.title,
-        description: req.body.description
-      });
-    })
-    .then(data => res.json(data))
-    .catch(err => res.status(400).json(err));
-  });
+    return dataLoader.updateBoard(req.params.id, {
+      title: req.body.title,
+      description: req.body.description
+    });
+})
+.then(data => res.json(data))
+.catch(err => res.status(400).json(err));
+});
+
 
   // 5 - FIVE
   // Delete an owned board
@@ -66,7 +69,7 @@ module.exports = (dataLoader) => {
   // 6 - SIX OK MATT
   // Retrieve all the bookmarks for a single board
   boardsController.get('/:id/bookmarks', (req, res) => {
-    // TODO: this is up to you to implement :)
+
     dataLoader.getAllBookmarksForBoard(req.params.id)
        .then(data => res.json(data))
     .catch(err => res.status(400).json(err));
