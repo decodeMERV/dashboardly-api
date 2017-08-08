@@ -88,10 +88,10 @@ module.exports = (dataLoader) => {
     });
 
 
-    }
+    })
 
 
 
-});
+
   return boardsController;
-};
+}

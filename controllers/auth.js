@@ -42,6 +42,20 @@ module.exports = (dataLoader) => {
   // Retrieve current user
   authController.get('/me', onlyLoggedIn, (req, res) => {
     // TODO: this is up to you to implement :)
+    if (req.sessionToken) {
+    dataLoader.getUserFromSession(req.sessionToken)
+      .then(data => res.json(data))
+    //otherwise use req.body.sessionToken
+    //once user is validated, what occurs next?
+
+      .then(() => res.status(204).end())
+              .catch(err => res.status(400).json(err));
+              } else {
+                res.status(401).json({ error: 'Invalid session token' });
+              }
+
+
+
     res.status(500).json({ error: 'not implemented' });
   });
 
