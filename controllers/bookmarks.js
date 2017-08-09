@@ -15,6 +15,7 @@ module.exports = (dataLoader) => {
       boardId:data,
       id: req.params.id,
    title: req.body.title,
+      description:req.body.description,
      url: req.body.url
    });
  })

@@ -88,6 +88,7 @@ boardsController.post('/', onlyLoggedIn, (req, res) => {
 
         return dataLoader.createBookmark({
           boardId: req.params.id,
+          description:req.body.description,
           title: req.body.title,
           url: req.body.url
         })
