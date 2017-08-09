@@ -6,30 +6,28 @@ module.exports = (dataLoader) => {
   const bookmarksController = express.Router();
 
   // Modify a bookmark
-  //check FULL URL OF Bookmarked
   bookmarksController.patch('/:id', onlyLoggedIn, (req, res) => {
-    // TODO: this is up to you to implement :)
-    // First check if the BOOKMARK to be PATCHed belongs to the user making the request
 
     dataLoader.bookmarkBelongsToUser(req.params.id, req.user.users_id)
-    .then(() => {
+    .then((data) => {
     return dataLoader.updateBookmark({
       ownerId:req.user.users_id,
+      boardId:data,
       id: req.params.id,
    title: req.body.title,
      url: req.body.url
    });
  })
 .then(data => res.json(data))
-.catch(err => res.status(400).json(err));
+.catch(err => res.status(400).json({
+    error: 'Not your bookmark to modify'
+  }));
 });
 
 
-
-
   // Delete a bookmark
+
   bookmarksController.delete('/:id', onlyLoggedIn, (req, res) => {
-    // TODO: this is up to you to implement :)
     dataLoader.bookmarkBelongsToUser(req.params.id, req.user.users_id)
     .then(() => {
     return dataLoader.deleteBookmark({
@@ -37,7 +35,9 @@ module.exports = (dataLoader) => {
     });
 })
 .then(() => res.status(204).end())
-.catch(err => res.status(400).json(err));
+.catch(err => res.status(400).json({
+    error: 'Not your bookmark to delete take it easy there'
+  }));
 });
 
 

@@ -29,7 +29,7 @@ module.exports = (dataLoader) => {
 
 
   // Delete a session (logout)
-  authController.delete('/sessions',(req, res) => {
+  authController.delete('/sessions', onlyLoggedIn,(req, res) => {
 
     if (req.sessionToken === req.body.token) {
       dataLoader.deleteToken(req.body.token)
@@ -45,13 +45,9 @@ module.exports = (dataLoader) => {
 
   authController.get('/me',onlyLoggedIn, (req, res) => {
 
-  console.log("req object",req)
    if (req.sessionToken) {
-     // console.log("this is the session req: ",req.sessionToken)
     dataLoader.getUserFromSession(req.sessionToken)
       .then(data => res.json(data))
-
-    //otherwise use req.body.sessionToken
 
 
       .then(() => res.status(204).end())

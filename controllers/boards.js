@@ -27,9 +27,7 @@ module.exports = (dataLoader) => {
   // 3 - THREE
   // Create a new board
 
-boardsController.post('/',  (req, res) => {
-
-  console.log(req.user.id)
+boardsController.post('/', onlyLoggedIn, (req, res) => {
 
     dataLoader.createBoard({
 
@@ -46,7 +44,6 @@ boardsController.post('/',  (req, res) => {
   // Modify an owned board
 
   boardsController.patch('/:id', onlyLoggedIn, (req, res) => {
-    // First check if the board to be PATCHed belongs to the user making the request
     dataLoader.boardBelongsToUser(req.params.id, req.user.users_id)
     .then(() => {
     return dataLoader.updateBoard(req.params.id, {
@@ -56,7 +53,7 @@ boardsController.post('/',  (req, res) => {
     });
 })
 .then(data => res.json(data))
-.catch(err => res.status(400).json(err));
+.catch(err => res.status(400).json({error:"Nacho board bello"}));
 });
 
 
@@ -69,10 +66,10 @@ boardsController.post('/',  (req, res) => {
       return dataLoader.deleteBoard(req.params.id);
     })
     .then(() => res.status(204).end())
-    .catch(err => res.status(400).json(err));
+    .catch(err => res.status(400).json({error:"Nacho board to delete bello"}));
   });
 
-  // 6 - SIX OK MATT
+  // 6 - SIX
   // Retrieve all the bookmarks for a single board
   boardsController.get('/:id/bookmarks', (req, res) => {
 
@@ -84,20 +81,18 @@ boardsController.post('/',  (req, res) => {
 
 
 
-  // Create a new bookmark under a board  OK MATT
+  // Create a new bookmark under a board
   boardsController.post('/:id/bookmarks', onlyLoggedIn, (req, res) => {
     dataLoader.boardBelongsToUser(req.params.id, req.user.users_id)
     .then (() => {
 
-      console.log("getting to create bookmark")
         return dataLoader.createBookmark({
-          ownerId: req.user.users_id,
           boardId: req.params.id,
           title: req.body.title,
           url: req.body.url
         })
           .then(data => res.json(data))
-    .catch(err => res.status(400).json(err));
+    .catch(err => res.status(400).json({error:"Nacho board to add a bookmark to bello"}));
     });
 
 
