@@ -5,6 +5,29 @@ const onlyLoggedIn = require('../lib/only-logged-in');
 module.exports = (dataLoader) => {
   const authController = express.Router();
 
+  // Fetch gravatar
+
+
+    /*
+    md5 hash the email
+    get the gravatar from the url
+    json parse that shit and acces the correct object key from the returned object
+    trim and bring it to lower case
+    insert gravatar into database
+     */
+  //
+  //
+  //   var URL = "";
+  //
+  //   fetch(url) {
+  //     .then(response => response.json())
+  //     .then(jsonData => {
+  //       //
+  //       //insert gravatar object into database
+  //     });
+  //   });
+  // }
+
 
   // Create a new user (signup)
   authController.post('/users', (req, res) => {
