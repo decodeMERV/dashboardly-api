@@ -45,7 +45,7 @@ module.exports = (dataLoader) => {
 
   authController.get('/me',onlyLoggedIn, (req, res) => {
 
-
+  console.log("req object",req)
    if (req.sessionToken) {
      // console.log("this is the session req: ",req.sessionToken)
     dataLoader.getUserFromSession(req.sessionToken)

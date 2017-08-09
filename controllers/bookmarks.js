@@ -6,14 +6,15 @@ module.exports = (dataLoader) => {
   const bookmarksController = express.Router();
 
   // Modify a bookmark
-  //check FUL URL OF Bookmarked
+  //check FULL URL OF Bookmarked
   bookmarksController.patch('/:id', onlyLoggedIn, (req, res) => {
     // TODO: this is up to you to implement :)
     // First check if the BOOKMARK to be PATCHed belongs to the user making the request
 
-    dataLoader.bookmarkBelongsToUser(req.params.id, req.user.id)
+    dataLoader.bookmarkBelongsToUser(req.params.id, req.user.users_id)
     .then(() => {
     return dataLoader.updateBookmark({
+      ownerId:req.user.users_id,
       id: req.params.id,
    title: req.body.title,
      url: req.body.url
@@ -29,7 +30,7 @@ module.exports = (dataLoader) => {
   // Delete a bookmark
   bookmarksController.delete('/:id', onlyLoggedIn, (req, res) => {
     // TODO: this is up to you to implement :)
-    dataLoader.bookmarkBelongsToUser(req.params.id, req.user.id)
+    dataLoader.bookmarkBelongsToUser(req.params.id, req.user.users_id)
     .then(() => {
     return dataLoader.deleteBookmark({
       id: req.params.id
