@@ -29,7 +29,6 @@ module.exports = (dataLoader) => {
       .catch(err => res.status(401).json({error: "cannot login sorry!"}));
   });
 
-
   // Delete a session (logout)
   authController.delete('/sessions', onlyLoggedIn, (req, res) => {
 
@@ -38,9 +37,6 @@ module.exports = (dataLoader) => {
     dataLoader.deleteToken(req.sessionToken)
       .then(() => res.status(204).end())
       .catch(err => res.status(400).json(err));
-    // } else {
-    //   res.status(401).json({ error: 'Invalid session token' });
-    // }
   });
 
 

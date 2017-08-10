@@ -8,11 +8,11 @@ module.exports = (dataLoader) => {
   // Modify a bookmark
 
   bookmarksController.patch('/:id', onlyLoggedIn, (req, res) => {
-
-    dataLoader.bookmarkBelongsToUser(req.params.id, req.user.users_id)
+    dataLoader.bookmarkBelongsToUser(req.params.id, req.user.id)
       .then((data) => {
+
         return dataLoader.updateBookmark({
-          ownerId:req.user.users_id,
+          ownerId:req.user.id,
           boardId:data,
           id: req.params.id,
           title: req.body.title,
@@ -20,7 +20,7 @@ module.exports = (dataLoader) => {
           url: req.body.url
         });
       })
-      .then(data => res.json(data))
+      .then(data => res.json(data[0]))
       .catch(err => res.status(400).json({
         error: 'Not your bookmark to modify'
       }));
@@ -30,7 +30,7 @@ module.exports = (dataLoader) => {
   // Delete a bookmark
 
   bookmarksController.delete('/:id', onlyLoggedIn, (req, res) => {
-    dataLoader.bookmarkBelongsToUser(req.params.id, req.user.users_id)
+    dataLoader.bookmarkBelongsToUser(req.params.id, req.user.id)
       .then(() => {
         return dataLoader.deleteBookmark({
           id: req.params.id

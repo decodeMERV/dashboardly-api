@@ -1,6 +1,6 @@
 const express = require('express');
 const mysql = require('promise-mysql');
-const cors = require('cors');
+// const cors = require('cors');
 
 // Express middleware
 const bodyParser = require('body-parser');
@@ -29,7 +29,7 @@ const dataLoader = new DashboardlyDataLoader(connection);
 const app = express();
 
 // app.use(cors());
-app.use(cors({credentials:true,origin:true}));
+// app.use(cors({credentials:true,origin:true}));
 app.use(morgan('dev'));
 app.use(morgan('dev'));
 app.use(bodyParser.json());
@@ -37,12 +37,12 @@ app.use(checkLoginToken(dataLoader));
 
 // setting up CORS headers
 
-// app.use(function(req, res, next) {
-//   res.header('Access-Control-Allow-Origin', '*');
-//   res.header('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE,OPTIONS');
-//   res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
-//   next();
-// })
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  next();
+})
 
 app.use('/auth', authController(dataLoader));
 app.use('/boards', boardsController(dataLoader));

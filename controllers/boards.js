@@ -13,31 +13,32 @@ module.exports = (dataLoader) => {
       limit: req.query.count
     })
 
-    .then((res) => {
-      const obj = {};
-      obj.boards = res;
+      .then((res) => {
+        const obj = {};
+        obj.boards = res;
 
-      return obj;
-    })
-    .then(data => res.json(data))
-    .catch(err => res.status(400).json(err));
+        return obj;
+      })
+      .then(data => res.json(data))
+      .catch(err => res.status(400).json(err));
   });
 
   // 2 - TWO
   // Retrieve a single board
   boardsController.get('/:id', (req, res) => {
     dataLoader.getSingleBoard(req.params.id)
-    .then(data => res.json(data[0]))
-    .catch(err => res.status(400).json(err));
+      .then(data => res.json(data[0]))
+      .catch(err => res.status(400).json(err));
   });
 
   // 3 - THREE
   // Create a new board
 
   boardsController.post('/', onlyLoggedIn, (req, res) => {
+
     dataLoader.createBoard({
 
-      ownerId: req.user.users_id,
+      ownerId: req.user.id,
       title: req.body.title,
       description: req.body.description
     })
@@ -49,16 +50,17 @@ module.exports = (dataLoader) => {
   // Modify an owned board
 
   boardsController.patch('/:id', onlyLoggedIn, (req, res) => {
-    dataLoader.boardBelongsToUser(req.params.id, req.user.users_id)
-    .then(() => {
-      return dataLoader.updateBoard(req.params.id, {
-        ownerId: req.user.users_id,
-        title: req.body.title,
-        description: req.body.description
-      });
-    })
-.then(data => res.json(data))
-.catch(err => res.status(400).json({ error: 'Nacho board bello' }));
+    // dataLoader.boardBelongsToUser(req.params.id, req.user.users_id)
+    dataLoader.boardBelongsToUser(req.params.id, req.user.id)
+      .then(() => {
+        return dataLoader.updateBoard(req.params.id, {
+          ownerId: req.user.id,
+          title: req.body.title,
+          description: req.body.description
+        });
+      })
+      .then(data => res.json(data[0]))
+      .catch(err => res.status(400).json({ error: 'Nacho board bello' }));
   });
 
 
@@ -66,12 +68,12 @@ module.exports = (dataLoader) => {
   // Delete an owned board
   boardsController.delete('/:id', onlyLoggedIn, (req, res) => {
     // First check if the board to be DELETEd belongs to the user making the request
-    dataLoader.boardBelongsToUser(req.params.id, req.user.users_id)
-    .then(() => {
-      return dataLoader.deleteBoard(req.params.id);
-    })
-    .then(() => res.status(204).end())
-    .catch(err => res.status(400).json({ error: 'Nacho board to delete bello' }));
+    dataLoader.boardBelongsToUser(req.params.id, req.user.id)
+      .then(() => {
+        return dataLoader.deleteBoard(req.params.id);
+      })
+      .then(() => res.status(204).end())
+      .catch(err => res.status(400).json({ error: 'Nacho board to delete bello' }));
   });
 
   // 6 - SIX
@@ -91,7 +93,7 @@ module.exports = (dataLoader) => {
 
   // Create a new bookmark under a board
   boardsController.post('/:id/bookmarks', onlyLoggedIn, (req, res) => {
-    dataLoader.boardBelongsToUser(req.params.id, req.user.users_id)
+    dataLoader.boardBelongsToUser(req.params.id, req.user.id)
       .then(() => {
         return dataLoader.createBookmark({
           boardId: req.params.id,
@@ -100,7 +102,7 @@ module.exports = (dataLoader) => {
           url: req.body.url
         });
       })
-      .then(data => res.json(data))
+      .then(data => res.json(data[0]))
       .catch(err => res.status(400).json({ error: 'Nacho board to add a bookmark to bello' }));
   });
 
