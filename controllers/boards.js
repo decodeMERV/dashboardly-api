@@ -5,6 +5,24 @@ const onlyLoggedIn = require('../lib/only-logged-in');
 module.exports = (dataLoader) => {
   const boardsController = express.Router();
 
+
+  // EXTRA SEARCH FEATURE - newly added route to handle search
+  boardsController.post('/search', (req, res) => {
+    console.log(req.body.keyword, " = req.body.keyword sent from frontend");
+
+    dataLoader.getSearch(req.body.keyword)
+      .then((res) => {
+        const obj = {};
+        obj.searchResults = res;
+        return obj;
+      })
+      .then(data => {
+        console.log("data from getSearch",data)
+        res.json(data)
+      })
+      .catch(err=> res.status(400).json(err));
+  });
+
   // 1 - ONE
   // Retrieve a list of boards
   boardsController.get('/',(req, res) => {
